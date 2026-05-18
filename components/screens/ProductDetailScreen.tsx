@@ -156,7 +156,7 @@ export default function ProductDetailScreen() {
         </div>
 
         {/* Spacer para los botones flotantes */}
-        <div style={{ height: 100 }} />
+        <div style={{ height: 180 }} />
       </div>
 
       {/* Botones flotantes */}
