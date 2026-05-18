@@ -12,9 +12,8 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        message: body.message,
+        chatInput: body.message,
         sessionId: body.sessionId,
-        from: body.from || 'app-user',
       }),
     })
 
