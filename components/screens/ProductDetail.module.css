@@ -74,7 +74,7 @@
 .installBtn:active { transform:scale(.95); }
 
 /* Botones flotantes */
-.actions { position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:var(--bg-base);border-top:1px solid var(--border);display:flex;gap:10px;transition:background .3s; }
+.actions { position:absolute;bottom:80px;left:0;right:0;padding:16px 20px;background:var(--bg-base);border-top:1px solid var(--border);display:flex;gap:10px;transition:background .3s;z-index:10; }
 .addBtn { flex:1;padding:14px;background:var(--bg-input);border:1px solid var(--border);border-radius:14px;color:var(--text-primary);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s; }
 .addedBtn { border-color:var(--accent-green);color:var(--accent-green); }
 .addBtn:active { transform:scale(.97); }

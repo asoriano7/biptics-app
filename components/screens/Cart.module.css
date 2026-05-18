@@ -54,7 +54,7 @@
 .installNote p { font-size:12px;color:var(--text-secondary);line-height:1.6; }
 
 /* Actions */
-.actions { position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:var(--bg-base);border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;transition:background .3s; }
+.actions { position:absolute;bottom:80px;left:0;right:0;padding:16px 20px;background:var(--bg-base);border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;transition:background .3s;z-index:10; }
 .totalPreview { display:flex;flex-direction:column; }
 .totalLabel { font-size:11px;color:var(--text-secondary); }
 .totalAmount { font-size:18px;font-weight:700;color:var(--text-primary);transition:color .3s; }
