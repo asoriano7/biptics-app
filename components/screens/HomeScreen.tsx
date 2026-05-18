@@ -114,6 +114,27 @@ export default function HomeScreen() {
           </div>
         </div>
 
+        {/* FOOTER — Política de Privacidad */}
+        <div style={{
+          marginTop: 24,
+          paddingTop: 16,
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+          textAlign: 'center',
+          paddingBottom: 8,
+        }}>
+          <p style={{ margin: 0, fontSize: 11, color: 'var(--text-muted, #64748B)' }}>
+            © 2026 Biptics · {' '}
+            <a
+              href="/privacidad"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#00B4D8', textDecoration: 'none', fontSize: 11 }}
+            >
+              Política de Privacidad
+            </a>
+          </p>
+        </div>
+
       </div>
     </div>
   )
