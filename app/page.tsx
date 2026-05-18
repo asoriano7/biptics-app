@@ -5,6 +5,8 @@ import BottomNav      from '@/components/layout/BottomNav'
 import SplashScreen   from '@/components/screens/SplashScreen'
 import HomeScreen     from '@/components/screens/HomeScreen'
 import ShopScreen     from '@/components/screens/ShopScreen'
+import ProductDetailScreen from '@/components/screens/ProductDetailScreen'
+import CartScreen     from '@/components/screens/CartScreen'
 import LoginScreen    from '@/components/screens/LoginScreen'
 import MapScreen      from '@/components/screens/MapScreen'
 import SupportScreen  from '@/components/screens/SupportScreen'
@@ -14,6 +16,8 @@ const SCREEN_LABELS: Record<string, string> = {
   splash:  '① Splash Screen',
   home:    '② Home · Dashboard',
   shop:    '③ Tienda · Catálogo',
+  product: '③b Detalle de Producto',
+  cart:    '③c Carrito de Compras',
   login:   '④ Login · Autenticación',
   map:     '⑤ Mapa · Electrolineras',
   support: '⑥ Soporte IA · Agente',
@@ -31,6 +35,8 @@ export default function AppPage() {
           <SplashScreen  />
           <HomeScreen    />
           <ShopScreen    />
+          <ProductDetailScreen />
+          <CartScreen    />
           <LoginScreen   />
           <MapScreen     />
           <SupportScreen />

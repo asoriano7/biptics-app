@@ -3,17 +3,46 @@ import { create } from 'zustand'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
-export type Screen = 'splash' | 'home' | 'shop' | 'login' | 'map' | 'support'
+export type Screen = 'splash' | 'home' | 'shop' | 'product' | 'cart' | 'login' | 'map' | 'support'
+
+export interface Product {
+  id: number
+  badge: string
+  emoji: string
+  cat: string
+  name: string
+  specs: string[]
+  stars: number
+  reviews: number
+  stock: string
+  price: string
+  priceNum: number
+  iva: string
+  note: string
+  description: string
+  compatible: string[]
+}
+
+export interface CartItem {
+  product: Product
+  quantity: number
+}
 
 interface AppStore {
   theme: 'dark' | 'light'
   activeScreen: Screen
   cartCount: number
+  cartItems: CartItem[]
+  selectedProduct: Product | null
   user: User | null
   loadingAuth: boolean
   toggleTheme: () => void
   setScreen: (s: Screen) => void
-  addToCart: () => void
+  addToCart: (product?: Product) => void
+  removeFromCart: (productId: number) => void
+  updateQuantity: (productId: number, quantity: number) => void
+  clearCart: () => void
+  setSelectedProduct: (product: Product | null) => void
   setUser: (user: User | null) => void
   signInWithGoogle: () => Promise<void>
   signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>
@@ -21,10 +50,12 @@ interface AppStore {
   signOut: () => Promise<void>
 }
 
-export const useAppStore = create<AppStore>((set) => ({
+export const useAppStore = create<AppStore>((set, get) => ({
   theme: 'dark',
   activeScreen: 'splash',
   cartCount: 0,
+  cartItems: [],
+  selectedProduct: null,
   user: null,
   loadingAuth: false,
 
@@ -36,7 +67,64 @@ export const useAppStore = create<AppStore>((set) => ({
     }),
 
   setScreen: (activeScreen) => set({ activeScreen }),
-  addToCart: () => set((s) => ({ cartCount: s.cartCount + 1 })),
+
+  setSelectedProduct: (product) => set({ selectedProduct: product }),
+
+  addToCart: (product?: Product) => {
+    if (!product) {
+      set((s) => ({ cartCount: s.cartCount + 1 }))
+      return
+    }
+    set((s) => {
+      const existing = s.cartItems.find((i) => i.product.id === product.id)
+      if (existing) {
+        return {
+          cartItems: s.cartItems.map((i) =>
+            i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
+          ),
+          cartCount: s.cartCount + 1,
+        }
+      }
+      return {
+        cartItems: [...s.cartItems, { product, quantity: 1 }],
+        cartCount: s.cartCount + 1,
+      }
+    })
+  },
+
+  removeFromCart: (productId) => {
+    set((s) => {
+      const item = s.cartItems.find((i) => i.product.id === productId)
+      if (!item) return s
+      return {
+        cartItems: s.cartItems.filter((i) => i.product.id !== productId),
+        cartCount: s.cartCount - item.quantity,
+      }
+    })
+  },
+
+  updateQuantity: (productId, quantity) => {
+    set((s) => {
+      if (quantity <= 0) {
+        const item = s.cartItems.find((i) => i.product.id === productId)
+        return {
+          cartItems: s.cartItems.filter((i) => i.product.id !== productId),
+          cartCount: s.cartCount - (item?.quantity || 0),
+        }
+      }
+      const item = s.cartItems.find((i) => i.product.id === productId)
+      const diff = quantity - (item?.quantity || 0)
+      return {
+        cartItems: s.cartItems.map((i) =>
+          i.product.id === productId ? { ...i, quantity } : i
+        ),
+        cartCount: s.cartCount + diff,
+      }
+    })
+  },
+
+  clearCart: () => set({ cartItems: [], cartCount: 0 }),
+
   setUser: (user) => set({ user }),
 
   signInWithGoogle: async () => {
