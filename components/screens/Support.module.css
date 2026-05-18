@@ -39,10 +39,11 @@
 .errTitle  { font-size:11px;font-weight:700;color:var(--accent-red);margin-bottom:3px; }
 .errDetail { font-size:11px;color:#f87171;line-height:1.4; }
 
-.typing { padding:0 14px 4px;display:flex;gap:4px;align-items:center;flex-shrink:0; }
-.typing span { width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:block;animation:blink 1.2s infinite;transition:background .3s; }
-.typing span:nth-child(2) { animation-delay:.2s; }
-.typing span:nth-child(3) { animation-delay:.4s; }
+/* Typing dots dentro del bubble */
+.typingDots { display:flex;gap:4px;align-items:center;padding:2px 0; }
+.typingDots span { width:6px;height:6px;border-radius:50%;background:var(--text-secondary);display:block;animation:blink 1.2s infinite;transition:background .3s; }
+.typingDots span:nth-child(2) { animation-delay:.2s; }
+.typingDots span:nth-child(3) { animation-delay:.4s; }
 
 .pills { padding:8px 14px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0; }
 .pills::-webkit-scrollbar { display:none; }
@@ -61,5 +62,10 @@
 .inputRow   { padding:8px 14px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0;border-top:1px solid var(--border);transition:border-color .3s; }
 .chatInput  { flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:22px;padding:10px 15px;color:var(--text-primary);font-family:'Sora',sans-serif;font-size:13px;outline:none;transition:all .3s; }
 .chatInput::placeholder { color:var(--text-muted); }
+.chatInput:disabled { opacity:.6; }
 .voiceBtn   { width:36px;height:36px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;flex-shrink:0;transition:all .3s; }
-.sendBtn    { width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:#fff;flex-shrink:0; }
+.sendBtn    { width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:#fff;flex-shrink:0;transition:all .2s; }
+.sendBtn:disabled { opacity:.4;cursor:not-allowed; }
+
+@keyframes msgIn { from { opacity:0;transform:translateY(8px); } to { opacity:1;transform:translateY(0); } }
+@keyframes blink { 0%,80%,100% { opacity:.2; } 40% { opacity:1; } }
