@@ -16,6 +16,14 @@ const SESSION_ID = `app-${Date.now()}`
 const getTime = () =>
   new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
 
+// Convierte markdown básico a HTML simple
+const renderMarkdown = (text: string) => {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br/>')
+}
+
 const INITIAL_MESSAGES: Message[] = [
   {
     id: '1',
@@ -145,7 +153,16 @@ export default function SupportScreen() {
           <div key={msg.id} className={`${styles.msg} ${styles[msg.role]}`}>
             {msg.role === 'bot' && <div className={styles.avatar2}>⚡</div>}
             <div>
-              <div className={styles.bubble}>{msg.text}</div>
+              <div
+                className={styles.bubble}
+                dangerouslySetInnerHTML={
+                  msg.role === 'bot'
+                    ? { __html: renderMarkdown(msg.text) }
+                    : undefined
+                }
+              >
+                {msg.role === 'user' ? msg.text : undefined}
+              </div>
               {msg.errorCard && (
                 <div className={styles.errorCard}>
                   <p className={styles.errTitle}>{msg.errorCard.title}</p>
@@ -206,7 +223,6 @@ export default function SupportScreen() {
           onKeyDown={handleKeyDown}
           disabled={loading}
         />
-        <button className={styles.voiceBtn}>🎤</button>
         <button
           className={styles.sendBtn}
           onClick={() => sendMessage(input)}
