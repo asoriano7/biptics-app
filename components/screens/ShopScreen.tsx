@@ -88,7 +88,12 @@ export default function ShopScreen() {
             </div>
 
             {filtered.map((p) => (
-              <div key={p.id} className={styles.card} onClick={() => handleCardClick(p)}>
+              <div 
+                key={p.id} 
+                className={styles.card} 
+                onClick={() => p.inStock && handleCardClick(p)}
+                style={{ cursor: p.inStock ? 'pointer' : 'default' }}
+              >
                 <div className={styles.cardTop}>
                   <div className={styles.img}>
                     {p.badge && <span className={styles.badge}>{p.badge}</span>}
@@ -106,7 +111,14 @@ export default function ShopScreen() {
                       <span className={styles.stars}>★★★★★</span>
                       <span className={styles.reviews}>{p.reviews} reseñas</span>
                     </div>
-                    <p className={styles.stock}>✓ {p.stock}</p>
+                    <p style={{ 
+                      fontSize: '10px', 
+                      color: p.inStock ? 'var(--accent-green)' : '#ef4444',
+                      marginTop: '3px',
+                      fontWeight: p.inStock ? 'normal' : '700'
+                    }}>
+                      {p.inStock ? `✓ ${p.stock}` : '✗ Agotado'}
+                    </p>
                   </div>
                 </div>
                 <div className={styles.cardBottom}>
@@ -116,7 +128,13 @@ export default function ShopScreen() {
                     {p.note && <p className={styles.note}>{p.note}</p>}
                   </div>
                   <button
-                    className={`${styles.addBtn} ${added[p.id] ? styles.addedBtn : ''} ${!p.inStock ? styles.disabledBtn : ''}`}
+                    style={{
+                      background: p.inStock ? undefined : '#374151',
+                      color: p.inStock ? undefined : '#9CA3AF',
+                      cursor: p.inStock ? 'pointer' : 'not-allowed',
+                      opacity: p.inStock ? 1 : 0.7,
+                    }}
+                    className={`${styles.addBtn} ${added[p.id] ? styles.addedBtn : ''}`}
                     onClick={(e) => handleAdd(e, p)}
                     disabled={!p.inStock}
                   >
