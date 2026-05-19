@@ -162,12 +162,18 @@ export default function ProductDetailScreen() {
       {/* Botones flotantes */}
       <div className={styles.actions}>
         <button
-          className={`${styles.addBtn} ${added ? styles.addedBtn : ''}`}
+          className={`${styles.addBtn} ${added ? styles.addedBtn : ''} ${!p.inStock ? styles.disabledBtn : ''}`}
           onClick={handleAdd}
+          disabled={!p.inStock}
         >
-          {added ? '✓ Agregado' : 'Agregar al carrito'}
+          {!p.inStock ? 'Agotado' : added ? '✓ Agregado' : 'Agregar al carrito'}
         </button>
-        <button className={styles.buyBtn} onClick={handleBuyNow}>
+        <button
+          className={styles.buyBtn}
+          onClick={handleBuyNow}
+          disabled={!p.inStock}
+          style={{ opacity: p.inStock ? 1 : 0.4 }}
+        >
           Comprar ahora
         </button>
       </div>
