@@ -24,17 +24,28 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const data = await response.json()
+    // Respond to Webhook puede retornar texto plano o JSON
+    const contentType = response.headers.get('content-type') || ''
+    let reply = ''
 
-    // n8n puede retornar el output en diferentes formatos
-    const reply =
-      data?.output ||
-      data?.text ||
-      data?.message ||
-      data?.reply ||
-      (Array.isArray(data) && data[0]?.output) ||
-      (Array.isArray(data) && data[0]?.text) ||
-      'BIPA está procesando tu consulta...'
+    if (contentType.includes('application/json')) {
+      const data = await response.json()
+      reply =
+        data?.output ||
+        data?.text ||
+        data?.message ||
+        data?.reply ||
+        (Array.isArray(data) && data[0]?.output) ||
+        (Array.isArray(data) && data[0]?.text) ||
+        JSON.stringify(data)
+    } else {
+      // Texto plano
+      reply = await response.text()
+    }
+
+    if (!reply || reply.trim() === '') {
+      reply = 'BIPA está procesando tu consulta...'
+    }
 
     return NextResponse.json({ reply })
   } catch (error) {
