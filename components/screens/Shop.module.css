@@ -57,3 +57,12 @@
 .addBtn { background:linear-gradient(135deg,var(--accent-blue),#0d47a1);border:none;border-radius:12px;padding:10px 16px;color:#fff;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap; }
 .addBtn:active { transform:scale(.95); }
 .addedBtn { background:linear-gradient(135deg,var(--accent-green),#0d8f6f); }
+
+.loadingState { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:16px; }
+.loadingDots { display:flex;gap:6px; }
+.loadingDots span { width:8px;height:8px;border-radius:50%;background:var(--accent-blue);animation:blink 1.2s infinite; }
+.loadingDots span:nth-child(2) { animation-delay:.2s; }
+.loadingDots span:nth-child(3) { animation-delay:.4s; }
+.loadingText { font-size:13px;color:var(--text-secondary); }
+
+@keyframes blink { 0%,80%,100% { opacity:.2; } 40% { opacity:1; } }
