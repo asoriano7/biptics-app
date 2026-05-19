@@ -128,15 +128,11 @@ export default function ShopScreen() {
                     {p.note && <p className={styles.note}>{p.note}</p>}
                   </div>
                   <button
-                    style={{
-                      background: p.inStock ? undefined : '#374151',
-                      color: p.inStock ? undefined : '#9CA3AF',
-                      cursor: p.inStock ? 'pointer' : 'not-allowed',
-                      opacity: p.inStock ? 1 : 0.7,
-                    }}
-                    className={`${styles.addBtn} ${added[p.id] ? styles.addedBtn : ''}`}
+                    className={p.inStock 
+                      ? `${styles.addBtn} ${added[p.id] ? styles.addedBtn : ''}` 
+                      : styles.soldOutBtn
+                    }
                     onClick={(e) => handleAdd(e, p)}
-                    disabled={!p.inStock}
                   >
                     {!p.inStock ? 'Agotado' : added[p.id] ? '✓' : 'Agregar'}
                   </button>

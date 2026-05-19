@@ -57,15 +57,7 @@
 .addBtn { background:linear-gradient(135deg,var(--accent-blue),#0d47a1);border:none;border-radius:12px;padding:10px 16px;color:#fff;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap; }
 .addBtn:active { transform:scale(.95); }
 .addedBtn { background:linear-gradient(135deg,var(--accent-green),#0d8f6f) !important; }
-.disabledBtn,
-.addBtn:disabled { 
-  background: var(--bg-input) !important;
-  border: 1px solid var(--border) !important;
-  color: var(--text-secondary) !important;
-  cursor: not-allowed !important;
-  opacity: 0.6 !important;
-  transform: none !important;
-}
+.soldOutBtn { background:#374151;border:none;border-radius:12px;padding:10px 16px;color:#9CA3AF;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:not-allowed;white-space:nowrap;opacity:0.7; }
 
 .loadingState { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:16px; }
 .loadingDots { display:flex;gap:6px; }
