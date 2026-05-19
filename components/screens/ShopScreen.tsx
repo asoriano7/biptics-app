@@ -39,6 +39,7 @@ export default function ShopScreen() {
 
   const handleAdd = (e: React.MouseEvent, p: Product) => {
     e.stopPropagation()
+    if (!p.inStock) return
     addToCart(p)
     setAdded((prev) => ({ ...prev, [p.id]: true }))
     setTimeout(() => setAdded((prev) => ({ ...prev, [p.id]: false })), 2000)
