@@ -6,7 +6,7 @@ import type { User } from '@supabase/supabase-js'
 export type Screen = 'splash' | 'home' | 'shop' | 'product' | 'cart' | 'login' | 'map' | 'support'
 
 export interface Product {
-  id: number
+  id: string
   badge: string
   emoji: string
   cat: string
@@ -21,6 +21,7 @@ export interface Product {
   note: string
   description: string
   compatible: string[]
+  inStock: boolean
 }
 
 export interface CartItem {
