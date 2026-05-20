@@ -10,8 +10,12 @@ const PRODUCTS = [
 ]
 
 export default function HomeScreen() {
-  const { activeScreen, setScreen } = useAppStore()
+  const { activeScreen, setScreen, user } = useAppStore()
   const isActive = activeScreen === 'home'
+
+  const userName = user?.user_metadata?.full_name?.split(' ')[0]
+    || user?.email?.split('@')[0]
+    || 'Usuario'
 
   return (
     <div className={`${styles.home} ${isActive ? styles.active : ""}`}>
@@ -23,7 +27,7 @@ export default function HomeScreen() {
       {/* Header */}
       <div className={styles.header}>
         <h2 className={styles.greeting}>
-          Hola, <span className={styles.name}>Alex</span> 👋
+          Hola, <span className={styles.name}>{userName}</span> 👋
         </h2>
         <p className={styles.sub}>Bienvenido a Biptics</p>
       </div>
@@ -114,7 +118,7 @@ export default function HomeScreen() {
           </div>
         </div>
 
-        {/* FOOTER — Política de Privacidad */}
+        {/* FOOTER */}
         <div style={{
           marginTop: 24,
           paddingTop: 16,
@@ -124,12 +128,8 @@ export default function HomeScreen() {
         }}>
           <p style={{ margin: 0, fontSize: 11, color: 'var(--text-muted, #64748B)' }}>
             © 2026 Biptics · {' '}
-            <a
-              href="/privacidad"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: '#00B4D8', textDecoration: 'none', fontSize: 11 }}
-            >
+            <a href="/privacidad" target="_blank" rel="noopener noreferrer"
+              style={{ color: '#00B4D8', textDecoration: 'none', fontSize: 11 }}>
               Política de Privacidad
             </a>
           </p>
