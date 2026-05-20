@@ -25,7 +25,7 @@
 
 .item:active { opacity: 0.7; }
 
-.icon  { font-size: 20px; line-height: 1; }
+.icon  { font-size: 20px; line-height: 1; display:flex;align-items:center;justify-content:center;width:24px;height:24px; }
 
 .label {
   font-size: 10px; font-weight: 500;
@@ -34,3 +34,7 @@
 }
 
 .active .label { color: var(--accent-cyan); }
+
+/* Avatar en nav */
+.avatarImg { width:24px;height:24px;border-radius:8px;object-fit:cover;border:2px solid var(--accent-cyan); }
+.avatarInitials { width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;border:2px solid var(--accent-cyan); }

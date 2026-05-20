@@ -3,7 +3,7 @@ import { create } from 'zustand'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
-export type Screen = 'splash' | 'home' | 'shop' | 'product' | 'cart' | 'login' | 'map' | 'support'
+export type Screen = 'splash' | 'home' | 'shop' | 'product' | 'cart' | 'login' | 'map' | 'support' | 'profile'
 
 export interface Product {
   id: string
@@ -32,6 +32,7 @@ export interface CartItem {
 interface AppStore {
   theme: 'dark' | 'light'
   activeScreen: Screen
+  previousScreen: Screen
   cartCount: number
   cartItems: CartItem[]
   selectedProduct: Product | null
@@ -54,6 +55,7 @@ interface AppStore {
 export const useAppStore = create<AppStore>((set, get) => ({
   theme: 'dark',
   activeScreen: 'splash',
+  previousScreen: 'home',
   cartCount: 0,
   cartItems: [],
   selectedProduct: null,
@@ -67,7 +69,10 @@ export const useAppStore = create<AppStore>((set, get) => ({
       return { theme: next }
     }),
 
-  setScreen: (activeScreen) => set({ activeScreen }),
+  setScreen: (activeScreen) => set((s) => ({ 
+    previousScreen: s.activeScreen, 
+    activeScreen 
+  })),
 
   setSelectedProduct: (product) => set({ selectedProduct: product }),
 
@@ -142,7 +147,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) return { error: error.message }
-    set({ activeScreen: 'home' })
+    const prev = get().previousScreen
+    set({ activeScreen: prev === 'login' ? 'home' : prev })
     return { error: null }
   },
 
@@ -154,7 +160,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
       options: { data: { full_name: name } },
     })
     if (error) return { error: error.message }
-    set({ activeScreen: 'home' })
+    const prev = get().previousScreen
+    set({ activeScreen: prev === 'login' ? 'home' : prev })
     return { error: null }
   },
 

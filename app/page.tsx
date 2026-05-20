@@ -10,6 +10,7 @@ import CartScreen     from '@/components/screens/CartScreen'
 import LoginScreen    from '@/components/screens/LoginScreen'
 import MapScreen      from '@/components/screens/MapScreen'
 import SupportScreen  from '@/components/screens/SupportScreen'
+import ProfileScreen  from '@/components/screens/ProfileScreen'
 import styles from './App.module.css'
 
 const SCREEN_LABELS: Record<string, string> = {
@@ -21,6 +22,7 @@ const SCREEN_LABELS: Record<string, string> = {
   login:   '④ Login · Autenticación',
   map:     '⑤ Mapa · Electrolineras',
   support: '⑥ Soporte IA · Agente',
+  profile: '⑦ Perfil · Usuario',
 }
 
 export default function AppPage() {
@@ -40,6 +42,7 @@ export default function AppPage() {
           <LoginScreen   />
           <MapScreen     />
           <SupportScreen />
+          <ProfileScreen />
           {!hideNav && <BottomNav />}
         </div>
       </div>
