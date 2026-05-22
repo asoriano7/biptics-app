@@ -19,7 +19,7 @@ export default function ProfileScreen() {
   const userAvatar = user?.user_metadata?.avatar_url || null
 
   // Estado editable — cargado desde Supabase
-  const [nombre, setNombre] = useState(user?.user_metadata?.full_name || '')
+  const [nombre, setNombre] = useState('')
   const [cedula, setCedula] = useState('')
   const [telefono, setTelefono] = useState('')
   const [ciudad, setCiudad] = useState('')
