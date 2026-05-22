@@ -68,3 +68,8 @@
 .emptyState { display:flex;flex-direction:column;align-items:center;padding:40px 0 24px;gap:10px;text-align:center; }
 .emptyTitle { font-size:17px;font-weight:700;color:var(--text-primary); }
 .emptySub { font-size:13px;color:var(--text-secondary);max-width:260px;line-height:1.6; }
+
+/* Fix menuContent y menuSub — forzar colores */
+.menuContent { flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:2px; }
+.menuLabel { font-size:14px;font-weight:600;color:var(--text-primary) !important;text-align:left;line-height:1.3; }
+.menuSub { font-size:11px;color:var(--text-secondary) !important;text-align:left;line-height:1.3; }
