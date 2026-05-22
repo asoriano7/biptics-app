@@ -148,7 +148,7 @@ export default function ProfileScreen() {
                 </div>
                 <div className={styles.fieldWrap}>
                   <label className={styles.dataLabel}>Teléfono celular</label>
-                  <input className={styles.dataInput} value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="Ej: 316 528 4375" />
+                  <input className={styles.dataInput} value={telefono} onChange={e => setTelefono(e.target.value.replace(/[^0-9\s]/g, ""))} placeholder="Ej: 316 528 4375" type="tel" maxLength={15} />
                 </div>
                 <button className={styles.saveBtn} disabled={saving} onClick={() => handleSave({ telefono })}>
                   {saving ? 'Guardando...' : 'Guardar'}
