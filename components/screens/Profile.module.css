@@ -26,18 +26,11 @@
 /* Menu */
 .menuSection { margin-bottom:20px; }
 .menuTitle { font-size:11px;font-weight:700;color:var(--text-secondary);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px; }
-
 .menuItem { width:100%;display:flex;align-items:center;gap:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:8px;cursor:pointer;text-decoration:none;transition:all .2s; }
 .menuItem:active { opacity:.8; }
-
-.menuIcon { font-size:18px;width:28px;text-align:center;flex-shrink:0; }
-
-/* menuContent agrupa label + sub en columna */
-.menuContent { flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:2px; }
-.menuLabel { font-size:14px;font-weight:600;color:var(--text-primary);text-align:left;transition:color .3s;line-height:1.3; }
-.menuSub { font-size:11px;color:var(--text-secondary);text-align:left;line-height:1.3; }
-
-.menuArrow { font-size:14px;color:var(--text-secondary);flex-shrink:0; }
+.menuIcon { font-size:18px;width:28px;text-align:center; }
+.menuLabel { flex:1;font-size:14px;font-weight:500;color:var(--text-primary);text-align:left;transition:color .3s; }
+.menuArrow { font-size:14px;color:var(--text-secondary); }
 
 /* Sign out */
 .signOutBtn { width:100%;padding:14px;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.3);border-radius:14px;color:#f87171;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:12px; }
@@ -52,3 +45,26 @@
 .loginBtn:active { transform:scale(.97); }
 .registerBtn { width:100%;padding:14px;background:var(--bg-input);border:1px solid var(--border);border-radius:14px;color:var(--text-primary);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s; }
 .registerBtn:active { transform:scale(.97); }
+
+/* Back button */
+.backBtn { width:36px;height:36px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text-secondary);cursor:pointer;flex-shrink:0; }
+
+/* Data cards */
+.dataCard { background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:18px 16px;margin-bottom:14px; }
+.dataCardTitle { font-size:13px;font-weight:700;color:var(--accent-cyan);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px; }
+.dataLabel { font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:4px; }
+.dataValue { font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:2px; }
+.dataValueSub { font-size:13px;color:var(--text-secondary);margin-bottom:8px; }
+.dataHint { font-size:10px;color:var(--text-muted);margin-top:4px; }
+.editLink { background:none;border:none;color:var(--accent-cyan);font-size:13px;font-weight:600;cursor:pointer;padding:4px 0;margin-top:8px; }
+
+/* Form fields */
+.fieldWrap { margin-bottom:12px; }
+.dataInput { width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text-primary);font-family:'Sora',sans-serif;font-size:14px;outline:none;transition:border .2s;box-sizing:border-box; }
+.dataInput:focus { border-color:var(--accent-cyan); }
+.saveBtn { width:100%;padding:13px;background:linear-gradient(135deg,var(--accent-cyan),#0097b2);border:none;border-radius:14px;color:#fff;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px; }
+
+/* Empty state */
+.emptyState { display:flex;flex-direction:column;align-items:center;padding:40px 0 24px;gap:10px;text-align:center; }
+.emptyTitle { font-size:17px;font-weight:700;color:var(--text-primary); }
+.emptySub { font-size:13px;color:var(--text-secondary);max-width:260px;line-height:1.6; }
