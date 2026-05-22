@@ -8,6 +8,24 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+        setReady(true)
+      }
+    })
+
+    // Verificar sesión existente
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   const handleReset = async () => {
     if (!password || !confirm) { setError('Completa todos los campos'); return }
@@ -46,9 +64,7 @@ export default function ResetPasswordPage() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 0,
       }}>
-        {/* Logo */}
         <div style={{
           width: 64, height: 64, borderRadius: 18,
           background: 'linear-gradient(135deg,#00B4D8,#22D3A5)',
@@ -73,7 +89,7 @@ export default function ResetPasswordPage() {
             }}>
               ✅ ¡Contraseña actualizada correctamente!
             </div>
-            <a href="/?loggedIn=true" style={{
+            <a href="https://www.biptics.com" style={{
               width: '100%', padding: '14px', textAlign: 'center',
               background: 'linear-gradient(135deg,#00B4D8,#0097b2)',
               border: 'none', borderRadius: 14, color: '#fff',
@@ -83,6 +99,10 @@ export default function ResetPasswordPage() {
               Ir a Biptics →
             </a>
           </>
+        ) : !ready ? (
+          <div style={{ color: '#94A3B8', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>
+            ⏳ Verificando sesión...
+          </div>
         ) : (
           <>
             {error && (
