@@ -3,7 +3,7 @@ import { create } from 'zustand'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
-export type Screen = 'splash' | 'home' | 'shop' | 'product' | 'cart' | 'login' | 'map' | 'support' | 'profile'
+export type Screen = 'splash' | 'home' | 'shop' | 'product' | 'cart' | 'login' | 'map' | 'support' | 'profile' | 'resetPassword'
 
 export interface Product {
   id: string

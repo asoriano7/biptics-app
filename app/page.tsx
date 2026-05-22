@@ -11,23 +11,25 @@ import LoginScreen    from '@/components/screens/LoginScreen'
 import MapScreen      from '@/components/screens/MapScreen'
 import SupportScreen  from '@/components/screens/SupportScreen'
 import ProfileScreen  from '@/components/screens/ProfileScreen'
+import ResetPasswordScreen from '@/components/screens/ResetPasswordScreen'
 import styles from './App.module.css'
 
 const SCREEN_LABELS: Record<string, string> = {
-  splash:  '① Splash Screen',
-  home:    '② Home · Dashboard',
-  shop:    '③ Tienda · Catálogo',
-  product: '③b Detalle de Producto',
-  cart:    '③c Carrito de Compras',
-  login:   '④ Login · Autenticación',
-  map:     '⑤ Mapa · Electrolineras',
-  support: '⑥ Soporte IA · Agente',
-  profile: '⑦ Perfil · Usuario',
+  splash:        '① Splash Screen',
+  home:          '② Home · Dashboard',
+  shop:          '③ Tienda · Catálogo',
+  product:       '③b Detalle de Producto',
+  cart:          '③c Carrito de Compras',
+  login:         '④ Login · Autenticación',
+  map:           '⑤ Mapa · Electrolineras',
+  support:       '⑥ Soporte IA · Agente',
+  profile:       '⑦ Perfil · Usuario',
+  resetPassword: '⑧ Nueva Contraseña',
 }
 
 export default function AppPage() {
   const { activeScreen, theme } = useAppStore()
-  const hideNav = activeScreen === 'splash' || activeScreen === 'login'
+  const hideNav = activeScreen === 'splash' || activeScreen === 'login' || activeScreen === 'resetPassword'
 
   return (
     <main className={styles.shell}>
@@ -43,6 +45,7 @@ export default function AppPage() {
           <MapScreen     />
           <SupportScreen />
           <ProfileScreen />
+          <ResetPasswordScreen />
           {!hideNav && <BottomNav />}
         </div>
       </div>
