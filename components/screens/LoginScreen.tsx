@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import styles from './Login.module.css'
 
 export default function LoginScreen() {
-  const { activeScreen, setScreen, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAppStore()
+  const { activeScreen, setScreen, setUser, signInWithGoogle, signInWithEmail } = useAppStore()
   const [isRegister, setIsRegister] = useState(false)
   const [isForgot, setIsForgot] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -23,13 +23,43 @@ export default function LoginScreen() {
     setLoading(false)
   }
 
-  const handleSubmit = async () => {
+  const handleRegister = async () => {
+    if (!name || !email || !password) { setError('Completa todos los campos'); return }
+    if (password.length < 6) { setError('La contraseña debe tener mínimo 6 caracteres'); return }
+    setLoading(true)
+    setError(null)
+    const supabase = createClient()
+
+    // 1. Crear cuenta en Supabase Auth
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name } },
+    })
+
+    if (signUpError) { setError(signUpError.message); setLoading(false); return }
+
+    // 2. Insertar en tabla usuarios
+    if (data.user) {
+      await supabase.from('usuarios').upsert({
+        id: data.user.id,
+        nombre: name,
+        ciudad: 'Bogotá',
+        rol: 'cliente',
+        plan_soporte: 'gratis',
+        activo: true,
+      })
+      setUser(data.user)
+      setScreen('home')
+    }
+    setLoading(false)
+  }
+
+  const handleLogin = async () => {
     if (!email || !password) { setError('Completa todos los campos'); return }
     setLoading(true)
     setError(null)
-    const result = isRegister
-      ? await signUpWithEmail(name, email, password)
-      : await signInWithEmail(email, password)
+    const result = await signInWithEmail(email, password)
     if (result.error) setError(result.error)
     setLoading(false)
   }
@@ -73,38 +103,25 @@ export default function LoginScreen() {
           <>
             <h2 className={styles.title}>Recuperar contraseña</h2>
             <p className={styles.sub}>Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
-
             {error && <div className={styles.errorMsg}>⚠ {error}</div>}
-            {success && (
-              <div className={styles.successMsg}>
-                ✅ {success}
-              </div>
-            )}
-
+            {success && <div className={styles.successMsg}>✅ {success}</div>}
             {!success && (
               <div className={styles.form}>
                 <div className={styles.fieldWrap}>
                   <label className={styles.label}>Correo electrónico</label>
-                  <input
-                    type="email"
-                    placeholder="tu@correo.com"
-                    className={styles.input}
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                  />
+                  <input type="email" placeholder="tu@correo.com" className={styles.input}
+                    value={email} onChange={e => setEmail(e.target.value)} />
                 </div>
                 <button className={styles.submitBtn} onClick={handleForgot} disabled={loading}>
                   {loading ? 'Enviando...' : 'Enviar enlace de recuperación'}
                 </button>
               </div>
             )}
-
             <p className={styles.switchLink}>
               <span onClick={resetForgot}>← Volver al inicio de sesión</span>
             </p>
           </>
         ) : (
-          /* — PANTALLA LOGIN / REGISTRO — */
           <>
             <h2 className={styles.title}>Bienvenido a Biptics</h2>
             <p className={styles.sub}>Inicia sesión para gestionar tu cargador y acceder al soporte IA.</p>
@@ -127,7 +144,7 @@ export default function LoginScreen() {
               {isRegister && (
                 <div className={styles.fieldWrap}>
                   <label className={styles.label}>Nombre</label>
-                  <input type="text" placeholder="Tu nombre" className={styles.input}
+                  <input type="text" placeholder="Tu nombre completo" className={styles.input}
                     value={name} onChange={e => setName(e.target.value)} />
                 </div>
               )}
@@ -146,7 +163,9 @@ export default function LoginScreen() {
                   </p>
                 )}
               </div>
-              <button className={styles.submitBtn} onClick={handleSubmit} disabled={loading}>
+              <button className={styles.submitBtn}
+                onClick={isRegister ? handleRegister : handleLogin}
+                disabled={loading}>
                 {loading ? 'Cargando...' : isRegister ? 'Crear cuenta' : 'Ingresar'}
               </button>
             </div>
