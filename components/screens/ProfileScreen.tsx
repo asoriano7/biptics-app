@@ -1,6 +1,7 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAppStore } from '@/lib/store/useAppStore'
+import { createClient } from '@/lib/supabase/client'
 import styles from './Profile.module.css'
 
 type SubScreen = 'main' | 'misDatos' | 'misPedidos' | 'direccion'
@@ -10,17 +11,41 @@ export default function ProfileScreen() {
   const isActive = activeScreen === 'profile'
   const [subScreen, setSubScreen] = useState<SubScreen>('main')
   const [editando, setEditando] = useState<'personal' | 'contacto' | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [savedMsg, setSavedMsg] = useState(false)
 
   // Datos del usuario
-  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuario'
   const userEmail = user?.email || ''
   const userAvatar = user?.user_metadata?.avatar_url || null
-  const initials = userName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
 
-  // Estado editable
-  const [nombre, setNombre] = useState(userName)
+  // Estado editable — cargado desde Supabase
+  const [nombre, setNombre] = useState(user?.user_metadata?.full_name || '')
   const [cedula, setCedula] = useState('')
   const [telefono, setTelefono] = useState('')
+  const [ciudad, setCiudad] = useState('')
+  const [direccion, setDireccion] = useState('')
+  const [barrio, setBarrio] = useState('')
+
+  const initials = nombre.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) || '?'
+
+  // Cargar datos desde Supabase al montar
+  useEffect(() => {
+    if (!user) return
+    const supabase = createClient()
+    supabase
+      .from('usuarios')
+      .select('nombre, cedula, telefono, ciudad')
+      .eq('id', user.id)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          if (data.nombre) setNombre(data.nombre)
+          if (data.cedula) setCedula(data.cedula)
+          if (data.telefono) setTelefono(data.telefono)
+          if (data.ciudad) setCiudad(data.ciudad)
+        }
+      })
+  }, [user])
 
   const handleSignOut = async () => {
     await signOut()
@@ -30,6 +55,33 @@ export default function ProfileScreen() {
   const handleBack = () => {
     if (subScreen !== 'main') { setSubScreen('main'); setEditando(null) }
     else setScreen('home')
+  }
+
+  const handleSave = async (campos: Record<string, string>) => {
+    if (!user) return
+    setSaving(true)
+    const supabase = createClient()
+    await supabase
+      .from('usuarios')
+      .update(campos)
+      .eq('id', user.id)
+    setSaving(false)
+    setSavedMsg(true)
+    setEditando(null)
+    setTimeout(() => setSavedMsg(false), 2500)
+  }
+
+  const handleSaveDireccion = async () => {
+    if (!user) return
+    setSaving(true)
+    const supabase = createClient()
+    await supabase
+      .from('usuarios')
+      .update({ ciudad })
+      .eq('id', user.id)
+    setSaving(false)
+    setSavedMsg(true)
+    setTimeout(() => setSavedMsg(false), 2500)
   }
 
   // ── SUB-PANTALLA: MIS DATOS ──
@@ -42,6 +94,12 @@ export default function ProfileScreen() {
           <h2 className={styles.title}>Mis datos</h2>
         </div>
         <div className={styles.scroll}>
+
+          {savedMsg && (
+            <div style={{ background: 'rgba(34,197,94,.1)', border: '1px solid rgba(34,197,94,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#4ade80', marginBottom: 12, textAlign: 'center' }}>
+              ✅ Datos guardados correctamente
+            </div>
+          )}
 
           {/* Información personal */}
           <div className={styles.dataCard}>
@@ -56,11 +114,13 @@ export default function ProfileScreen() {
                   <label className={styles.dataLabel}>Cédula (CC)</label>
                   <input className={styles.dataInput} value={cedula} onChange={e => setCedula(e.target.value)} placeholder="Ej: 72343028" />
                 </div>
-                <button className={styles.saveBtn} onClick={() => setEditando(null)}>Guardar</button>
+                <button className={styles.saveBtn} disabled={saving} onClick={() => handleSave({ nombre, cedula })}>
+                  {saving ? 'Guardando...' : 'Guardar'}
+                </button>
               </>
             ) : (
               <>
-                <p className={styles.dataValue}>{nombre}</p>
+                <p className={styles.dataValue}>{nombre || '—'}</p>
                 <p className={styles.dataValueSub}>CC {cedula || '—'}</p>
                 <button className={styles.editLink} onClick={() => setEditando('personal')}>✏️ Editar</button>
               </>
@@ -90,7 +150,9 @@ export default function ProfileScreen() {
                   <label className={styles.dataLabel}>Teléfono celular</label>
                   <input className={styles.dataInput} value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="Ej: 316 528 4375" />
                 </div>
-                <button className={styles.saveBtn} onClick={() => setEditando(null)}>Guardar</button>
+                <button className={styles.saveBtn} disabled={saving} onClick={() => handleSave({ telefono })}>
+                  {saving ? 'Guardando...' : 'Guardar'}
+                </button>
               </>
             ) : (
               <>
@@ -124,9 +186,7 @@ export default function ProfileScreen() {
             <span style={{ fontSize: 48 }}>📦</span>
             <p className={styles.emptyTitle}>Aún no tienes pedidos</p>
             <p className={styles.emptySub}>Cuando realices tu primera compra, aparecerá aquí.</p>
-            <button className={styles.loginBtn} onClick={() => setScreen('shop')}>
-              Ver tienda ⚡
-            </button>
+            <button className={styles.loginBtn} onClick={() => setScreen('shop')}>Ver tienda ⚡</button>
           </div>
           <div style={{ height: 100 }} />
         </div>
@@ -144,26 +204,30 @@ export default function ProfileScreen() {
           <h2 className={styles.title}>Dirección de envío</h2>
         </div>
         <div className={styles.scroll}>
-          <div className={styles.emptyState}>
-            <span style={{ fontSize: 48 }}>📍</span>
-            <p className={styles.emptyTitle}>Sin dirección registrada</p>
-            <p className={styles.emptySub}>Agrega tu dirección para agilizar tus pedidos.</p>
-          </div>
+
+          {savedMsg && (
+            <div style={{ background: 'rgba(34,197,94,.1)', border: '1px solid rgba(34,197,94,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#4ade80', marginBottom: 12, textAlign: 'center' }}>
+              ✅ Dirección guardada correctamente
+            </div>
+          )}
+
           <div className={styles.dataCard}>
-            <p className={styles.dataCardTitle}>Nueva dirección</p>
+            <p className={styles.dataCardTitle}>Dirección de envío</p>
             <div className={styles.fieldWrap}>
               <label className={styles.dataLabel}>Ciudad</label>
-              <input className={styles.dataInput} placeholder="Ej: Bogotá D.C." />
+              <input className={styles.dataInput} value={ciudad} onChange={e => setCiudad(e.target.value)} placeholder="Ej: Bogotá D.C." />
             </div>
             <div className={styles.fieldWrap}>
               <label className={styles.dataLabel}>Dirección</label>
-              <input className={styles.dataInput} placeholder="Ej: Cra 15 # 80-20" />
+              <input className={styles.dataInput} value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej: Cra 15 # 80-20" />
             </div>
             <div className={styles.fieldWrap}>
               <label className={styles.dataLabel}>Barrio / Apto</label>
-              <input className={styles.dataInput} placeholder="Ej: Chapinero, Apto 301" />
+              <input className={styles.dataInput} value={barrio} onChange={e => setBarrio(e.target.value)} placeholder="Ej: Chapinero, Apto 301" />
             </div>
-            <button className={styles.saveBtn}>Guardar dirección</button>
+            <button className={styles.saveBtn} disabled={saving} onClick={handleSaveDireccion}>
+              {saving ? 'Guardando...' : 'Guardar dirección'}
+            </button>
           </div>
           <div style={{ height: 100 }} />
         </div>
@@ -184,21 +248,19 @@ export default function ProfileScreen() {
       <div className={styles.scroll}>
         {user ? (
           <>
-            {/* Avatar */}
             <div className={styles.avatarSection}>
               {userAvatar ? (
-                <img src={userAvatar} alt={userName} className={styles.avatarImg} />
+                <img src={userAvatar} alt={nombre} className={styles.avatarImg} />
               ) : (
                 <div className={styles.avatarPlaceholder}>
                   <span>{initials}</span>
                 </div>
               )}
-              <h3 className={styles.userName}>{nombre}</h3>
+              <h3 className={styles.userName}>{nombre || 'Usuario'}</h3>
               <p className={styles.userEmail}>{userEmail}</p>
               <div className={styles.planBadge}>Plan Básico</div>
             </div>
 
-            {/* Stats */}
             <div className={styles.statsRow}>
               <div className={styles.statCard}>
                 <span className={styles.statNum}>{cartItems.length}</span>
@@ -214,7 +276,6 @@ export default function ProfileScreen() {
               </div>
             </div>
 
-            {/* Mi cuenta */}
             <div className={styles.menuSection}>
               <p className={styles.menuTitle}>Mi cuenta</p>
 
@@ -246,10 +307,8 @@ export default function ProfileScreen() {
               </button>
             </div>
 
-            {/* Biptics */}
             <div className={styles.menuSection}>
               <p className={styles.menuTitle}>Biptics</p>
-
               <button className={styles.menuItem} onClick={() => setScreen('cart')}>
                 <span className={styles.menuIcon}>🛒</span>
                 <div className={styles.menuContent}>
@@ -258,7 +317,6 @@ export default function ProfileScreen() {
                 </div>
                 <span className={styles.menuArrow}>→</span>
               </button>
-
               <button className={styles.menuItem} onClick={() => setScreen('support')}>
                 <span className={styles.menuIcon}>🤖</span>
                 <div className={styles.menuContent}>
@@ -267,7 +325,6 @@ export default function ProfileScreen() {
                 </div>
                 <span className={styles.menuArrow}>→</span>
               </button>
-
               <button className={styles.menuItem} onClick={() => setScreen('shop')}>
                 <span className={styles.menuIcon}>⚡</span>
                 <div className={styles.menuContent}>
@@ -278,7 +335,6 @@ export default function ProfileScreen() {
               </button>
             </div>
 
-            {/* Legal */}
             <div className={styles.menuSection}>
               <p className={styles.menuTitle}>Legal</p>
               <a href="/privacidad" target="_blank" rel="noopener noreferrer" className={styles.menuItem}>
@@ -291,9 +347,7 @@ export default function ProfileScreen() {
               </a>
             </div>
 
-            <button className={styles.signOutBtn} onClick={handleSignOut}>
-              Cerrar sesión
-            </button>
+            <button className={styles.signOutBtn} onClick={handleSignOut}>Cerrar sesión</button>
             <div style={{ height: 100 }} />
           </>
         ) : (
