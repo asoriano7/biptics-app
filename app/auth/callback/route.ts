@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: 'recovery' })
     if (!error) {
-      return NextResponse.redirect(`${origin}/?recovery=true`)
+      return NextResponse.redirect(`${origin}/auth/reset-password`)
     }
   }
 
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      return NextResponse.redirect(`${origin}/?recovery=true`)
+      return NextResponse.redirect(`${origin}/auth/reset-password`)
     }
   }
 
