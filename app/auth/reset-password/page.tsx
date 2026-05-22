@@ -91,7 +91,7 @@ export default function ResetPasswordPage() {
             }}>
               ✅ ¡Contraseña actualizada correctamente!
             </div>
-            <a href="/" style={{
+            <a href="/?loggedIn=true" style={{
               width: '100%', padding: '14px', textAlign: 'center',
               background: 'linear-gradient(135deg,#00B4D8,#0097b2)',
               border: 'none', borderRadius: 14, color: '#fff',

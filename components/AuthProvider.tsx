@@ -10,21 +10,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     const supabase = createClient()
 
-    // Verificar parámetro recovery ANTES de cualquier evento
-    const params = new URLSearchParams(window.location.search)
-    const isRecovery = params.get('recovery') === 'true'
-
-    if (isRecovery) {
-      window.history.replaceState({}, '', '/')
-      setScreen('resetPassword')
-    }
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
 
-      if (event === 'SIGNED_IN' && !isRecovery) {
-        const p = new URLSearchParams(window.location.search)
-        if (p.get('loggedIn') === 'true') {
+      if (event === 'SIGNED_IN') {
+        const isResetPage = window.location.pathname === '/auth/reset-password'
+        if (isResetPage) return
+
+        const params = new URLSearchParams(window.location.search)
+        if (params.get('loggedIn') === 'true') {
           window.history.replaceState({}, '', '/')
         }
         setScreen('home')
