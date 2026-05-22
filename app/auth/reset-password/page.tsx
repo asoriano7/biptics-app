@@ -8,25 +8,6 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    const supabase = createClient()
-
-    // Escuchar el evento PASSWORD_RECOVERY
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setReady(true)
-      }
-    })
-
-    // También verificar si ya hay sesión activa por recovery
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
 
   const handleReset = async () => {
     if (!password || !confirm) { setError('Completa todos los campos'); return }
@@ -65,6 +46,7 @@ export default function ResetPasswordPage() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        gap: 0,
       }}>
         {/* Logo */}
         <div style={{
@@ -101,10 +83,6 @@ export default function ResetPasswordPage() {
               Ir a Biptics →
             </a>
           </>
-        ) : !ready ? (
-          <div style={{ color: '#94A3B8', fontSize: 13, textAlign: 'center' }}>
-            Verificando enlace...
-          </div>
         ) : (
           <>
             {error && (
