@@ -10,11 +10,14 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     const supabase = createClient()
 
-    // Escuchar cambios de sesión en tiempo real
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
 
       if (event === 'SIGNED_IN') {
+        // Si está en reset-password, no navegar — dejar que el usuario guarde la nueva contraseña
+        const isResetPage = window.location.pathname === '/auth/reset-password'
+        if (isResetPage) return
+
         // Limpiar parámetro loggedIn de la URL si existe
         const params = new URLSearchParams(window.location.search)
         if (params.get('loggedIn') === 'true') {
