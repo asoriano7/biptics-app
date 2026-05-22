@@ -15,14 +15,21 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
       if (event === 'PASSWORD_RECOVERY') {
         setScreen('resetPassword')
+        window.history.replaceState({}, '', '/')
         return
       }
 
       if (event === 'SIGNED_IN') {
-        const isResetPage = window.location.pathname === '/auth/reset-password'
-        if (isResetPage) return
-
         const params = new URLSearchParams(window.location.search)
+
+        // Si viene de recovery → ir a resetPassword
+        if (params.get('recovery') === 'true') {
+          setScreen('resetPassword')
+          window.history.replaceState({}, '', '/')
+          return
+        }
+
+        // Login normal → ir a home
         if (params.get('loggedIn') === 'true') {
           window.history.replaceState({}, '', '/')
         }
