@@ -5,9 +5,10 @@ import { createClient } from '@/lib/supabase/client'
 import styles from './Login.module.css'
 
 export default function LoginScreen() {
-  const { activeScreen, setScreen, setUser, signInWithGoogle, signInWithEmail } = useAppStore()
+  const { activeScreen, setScreen, signInWithGoogle, signInWithEmail } = useAppStore()
   const [isRegister, setIsRegister] = useState(false)
   const [isForgot, setIsForgot] = useState(false)
+  const [isConfirmPending, setIsConfirmPending] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
@@ -30,7 +31,6 @@ export default function LoginScreen() {
     setError(null)
     const supabase = createClient()
 
-    // 1. Crear cuenta en Supabase Auth
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
@@ -39,7 +39,7 @@ export default function LoginScreen() {
 
     if (signUpError) { setError(signUpError.message); setLoading(false); return }
 
-    // 2. Insertar en tabla usuarios
+    // Insertar en tabla usuarios aunque esté pendiente de confirmación
     if (data.user) {
       await supabase.from('usuarios').upsert({
         id: data.user.id,
@@ -47,12 +47,12 @@ export default function LoginScreen() {
         ciudad: 'Bogotá',
         rol: 'cliente',
         plan_soporte: 'gratis',
-        activo: true,
+        activo: false, // se activa cuando confirme el correo
       })
-      setUser(data.user)
-      setScreen('home')
     }
+
     setLoading(false)
+    setIsConfirmPending(true) // mostrar pantalla de confirmación
   }
 
   const handleLogin = async () => {
@@ -92,14 +92,36 @@ export default function LoginScreen() {
       <div className={styles.backRow}>
         <button className={styles.backBtn} onClick={() => {
           if (isForgot) { resetForgot(); return }
+          if (isConfirmPending) { setIsConfirmPending(false); return }
           setScreen('home')
         }}>←</button>
       </div>
       <div className={styles.content}>
         <div className={styles.logoBox}>⚡</div>
 
-        {/* — PANTALLA RECUPERAR CONTRASEÑA — */}
-        {isForgot ? (
+        {/* — PANTALLA CONFIRMACIÓN EMAIL — */}
+        {isConfirmPending ? (
+          <>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>📧</div>
+            <h2 className={styles.title}>¡Revisa tu correo!</h2>
+            <p className={styles.sub}>
+              Enviamos un enlace de confirmación a{' '}
+              <strong style={{ color: 'var(--accent-cyan)' }}>{email}</strong>.
+              {' '}Haz clic en él para activar tu cuenta.
+            </p>
+            <div className={styles.successMsg} style={{ marginTop: 16 }}>
+              ✅ Cuenta creada correctamente
+            </div>
+            <p className={styles.switchLink} style={{ marginTop: 24 }}>
+              ¿Ya confirmaste?{' '}
+              <span onClick={() => { setIsConfirmPending(false); setIsRegister(false); setError(null) }}>
+                Iniciar sesión
+              </span>
+            </p>
+          </>
+
+        ) : isForgot ? (
+          /* — PANTALLA RECUPERAR CONTRASEÑA — */
           <>
             <h2 className={styles.title}>Recuperar contraseña</h2>
             <p className={styles.sub}>Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
@@ -121,7 +143,9 @@ export default function LoginScreen() {
               <span onClick={resetForgot}>← Volver al inicio de sesión</span>
             </p>
           </>
+
         ) : (
+          /* — PANTALLA LOGIN / REGISTRO — */
           <>
             <h2 className={styles.title}>Bienvenido a Biptics</h2>
             <p className={styles.sub}>Inicia sesión para gestionar tu cargador y acceder al soporte IA.</p>
