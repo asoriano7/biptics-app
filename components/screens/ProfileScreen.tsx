@@ -311,34 +311,6 @@ export default function ProfileScreen() {
             </div>
 
             <div className={styles.menuSection}>
-              <p className={styles.menuTitle}>Biptics</p>
-              <button className={styles.menuItem} onClick={() => setScreen('cart')}>
-                <span className={styles.menuIcon}>🛒</span>
-                <div className={styles.menuContent}>
-                  <span className={styles.menuLabel}>Mi carrito</span>
-                  <span className={styles.menuSub}>{cartItems.length} producto{cartItems.length !== 1 ? 's' : ''}</span>
-                </div>
-                <span className={styles.menuArrow}>→</span>
-              </button>
-              <button className={styles.menuItem} onClick={() => setScreen('support')}>
-                <span className={styles.menuIcon}>🤖</span>
-                <div className={styles.menuContent}>
-                  <span className={styles.menuLabel}>Soporte IA</span>
-                  <span className={styles.menuSub}>Diagnóstico remoto 24/7</span>
-                </div>
-                <span className={styles.menuArrow}>→</span>
-              </button>
-              <button className={styles.menuItem} onClick={() => setScreen('shop')}>
-                <span className={styles.menuIcon}>⚡</span>
-                <div className={styles.menuContent}>
-                  <span className={styles.menuLabel}>Tienda Biptics</span>
-                  <span className={styles.menuSub}>Wallboxes y accesorios EV</span>
-                </div>
-                <span className={styles.menuArrow}>→</span>
-              </button>
-            </div>
-
-            <div className={styles.menuSection}>
               <p className={styles.menuTitle}>Legal</p>
               <a href="/privacidad" target="_blank" rel="noopener noreferrer" className={styles.menuItem}>
                 <span className={styles.menuIcon}>🔒</span>
