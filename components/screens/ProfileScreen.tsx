@@ -34,7 +34,7 @@ export default function ProfileScreen() {
     const supabase = createClient()
     supabase
       .from('usuarios')
-      .select('nombre, cedula, telefono, ciudad')
+      .select('nombre, cedula, telefono, ciudad, direccion_entrega, barrio_entrega, ciudad_entrega')
       .eq('id', user.id)
       .single()
       .then(({ data }) => {
@@ -43,6 +43,9 @@ export default function ProfileScreen() {
           if (data.cedula) setCedula(data.cedula)
           if (data.telefono) setTelefono(data.telefono)
           if (data.ciudad) setCiudad(data.ciudad)
+          if (data.direccion_entrega) setDireccion(data.direccion_entrega)
+          if (data.barrio_entrega) setBarrio(data.barrio_entrega)
+          if (data.ciudad_entrega) setCiudad(data.ciudad_entrega)
         }
       })
   }, [user])
@@ -77,7 +80,7 @@ export default function ProfileScreen() {
     const supabase = createClient()
     await supabase
       .from('usuarios')
-      .update({ ciudad })
+      .update({ ciudad_entrega: ciudad, direccion_entrega: direccion, barrio_entrega: barrio })
       .eq('id', user.id)
     setSaving(false)
     setSavedMsg(true)
