@@ -333,7 +333,7 @@ export default function MapScreen() {
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             background: 'var(--bg-card)', borderRadius: '20px 20px 0 0',
-            padding: '20px 16px', maxHeight: '75%', overflowY: 'auto',
+            padding: '20px 16px 100px 16px', maxHeight: '80%', overflowY: 'auto',
             border: '1px solid var(--border)',
           }}>
             <button onClick={() => setSelectedStation(null)}
