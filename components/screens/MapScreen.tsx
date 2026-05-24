@@ -135,15 +135,25 @@ export default function MapScreen() {
     const supabase = createClient()
     const { data } = await supabase
       .from('reseñas_electrolineras')
-      .select('*, usuarios(nombre)')
+      .select('id, estacion_id, calificacion, comentario, created_at, usuario_id')
       .eq('estacion_id', stationId)
       .order('created_at', { ascending: false })
-    if (data) {
+    if (data && data.length > 0) {
+      // Obtener nombres de usuarios por separado
+      const userIds = [...new Set(data.map((r: any) => r.usuario_id))]
+      const { data: usuarios } = await supabase
+        .from('usuarios')
+        .select('id, nombre')
+        .in('id', userIds)
+      const nombresMap: Record<string, string> = {}
+      if (usuarios) usuarios.forEach((u: any) => { nombresMap[u.id] = u.nombre || 'Usuario' })
       const parsed = data.map((r: any) => ({
         ...r,
-        nombre: r.usuarios?.nombre || 'Usuario'
+        nombre: nombresMap[r.usuario_id] || 'Usuario'
       }))
       setReviews(parsed)
+    } else {
+      setReviews([])
     }
   }, [])
 
@@ -333,7 +343,7 @@ export default function MapScreen() {
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             background: 'var(--bg-card)', borderRadius: '20px 20px 0 0',
-            padding: '20px 16px 100px 16px', maxHeight: '80%', overflowY: 'auto',
+            padding: '20px 16px 72px 16px', maxHeight: '80%', overflowY: 'auto',
             border: '1px solid var(--border)',
           }}>
             <button onClick={() => setSelectedStation(null)}
