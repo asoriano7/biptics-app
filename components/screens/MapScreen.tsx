@@ -104,7 +104,7 @@ function parseOCMStation(item: any, userLat?: number, userLng?: number): Station
 }
 
 export default function MapScreen() {
-  const { activeScreen, theme, user } = useAppStore()
+  const { activeScreen, theme, user, setScreen } = useAppStore()
   const [activeFilter, setActiveFilter] = useState('Todos')
   const [selectedCity, setSelectedCity] = useState('Mi ubicación')
   const [userLocation, setUserLocation] = useState<{lng: number, lat: number} | null>(null)
@@ -139,7 +139,6 @@ export default function MapScreen() {
       .eq('estacion_id', stationId)
       .order('created_at', { ascending: false })
     if (data && data.length > 0) {
-      // Obtener nombres de usuarios por separado
       const userIds = [...new Set(data.map((r: any) => r.usuario_id))]
       const { data: usuarios } = await supabase
         .from('usuarios')
@@ -447,12 +446,14 @@ export default function MapScreen() {
           /* CARDS DE ESTACIONES */
           <div className={styles.overlay}>
             {/* Banner Biptics */}
-            <div style={{
-              background: 'linear-gradient(135deg,#1E3A5F,#00B4D8)',
-              borderRadius: 14, padding: '12px 14px', marginBottom: 10,
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,180,216,0.3)'
-            }}>
+            <div
+              onClick={() => setScreen('support')}
+              style={{
+                background: 'linear-gradient(135deg,#1E3A5F,#00B4D8)',
+                borderRadius: 14, padding: '12px 14px', marginBottom: 10,
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,180,216,0.3)'
+              }}>
               <div>
                 <p style={{ fontSize: 12, fontWeight: 700, color: '#fff', marginBottom: 2 }}>⚡ ¿Prefieres cargar en casa?</p>
                 <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)' }}>Biptics instala tu wallbox · Desde $1.250.000</p>
